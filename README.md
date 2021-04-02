@@ -2,7 +2,7 @@
 
 This repository contains all the work done for a demo, to simplify the integration with OCI DataCatalog.
 
-The code has to be executied inside a JUpyter Notebook, in OCI DS
+The code has to be executed inside a Jupyter Notebook, in OCI DS
 
 ## features
 * use ResourcePrincipal Auth.

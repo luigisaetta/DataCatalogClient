@@ -2,15 +2,20 @@ import oci
 import hashlib
 from ads.dataset.factory import DatasetFactory
 import os
+
 # utils to read from Data Catalog
+
+# for print formatting
 BOLD = '\033[1m'
 END = '\033[0m'
 
 class  ODSDataCatalog:
-    def __init__(self,catalog_id,asset_key,namespace_id):
-        self.catalog_id = catalog_id # catalog url
-        self.asset_key = asset_key # access key for the catalog
-        self.namespace_id = namespace_id # to identify OS BUCKET in Catalog
+    def __init__(self, catalog_id, asset_key, namespace_id):
+        self.catalog_id = catalog_id # catalog id
+	# assett key, in this case the assett is the bucket
+        self.asset_key = asset_key 
+	# normally it is the default namespace in the DataCatalog
+        self.namespace_id = namespace_id # namespace
     
     def get_key_from_name(self,name):
         rps = oci.auth.signers.get_resource_principals_signer()

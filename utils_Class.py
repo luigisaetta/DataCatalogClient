@@ -3,30 +3,25 @@ import hashlib
 from ads.dataset.factory import DatasetFactory
 import os
 # utils to read from Data Catalog
-
-#CATALOG_ID = "ocid1.datacatalog.oc1.eu-frankfurt-1.aaaaaaaap6lel4hqckltn7fvjnux42jepzohdktkceywlyrnnrwgolbupzhq"
-# use the default namespace
-#NAMESPACE_ID = "0e4d60d9-d5b5-467f-89bb-22db63a3ee18"
-# to identify OS BUCKET in Catalog
-#ASSETT_KEY = "6adf4ea3-67d5-44a3-b4f7-19fbf303d539"
+BOLD = '\033[1m'
+END = '\033[0m'
 
 class  ODSDataCatalog:
-    def __init__(self,catalog_id,asset_key,namespace_id,bucket_name):
-        self.catalog_id = catalog_id
-        self.asset_key = asset_key
-        self.namespace_id = namespace_id
-        self.bucket_name = bucket_name
+    def __init__(self,catalog_id,asset_key,namespace_id):
+        self.catalog_id = catalog_id # catalog url
+        self.asset_key = asset_key # access key for the catalog
+        self.namespace_id = namespace_id # to identify OS BUCKET in Catalog
     
     def get_key_from_name(self,name):
-        # for now it is hard coded, for the demo
         rps = oci.auth.signers.get_resource_principals_signer()
     
         dcat_client = oci.data_catalog.DataCatalogClient({}, signer=rps)
     
         search = dcat_client.list_entities(catalog_id=self.catalog_id,data_asset_key=self.asset_key).data
+        key_name = ''
         for elem in search.items:
             if str(elem.display_name) == name:
-                key_name = elem.key
+                key_name = elem.key # retrieve entity(file) access key
         return key_name
     
     def get_hash_from_catalog(self,name):
@@ -39,17 +34,51 @@ class  ODSDataCatalog:
                                   data_asset_key=self.asset_key, 
                                   entity_key=self.get_key_from_name(name))
         # md5 read from Catalog
-        md5_cat = response.data.custom_property_members[-1].value
+        search = response.data.custom_property_members
+        for elem in search:
+            if elem.display_name == 'file_hash':
+                if elem.value == None:
+                    print(BOLD+'No value registered in the data catalog!'+END)
+                    return None
+                else:
+                    md5_cat = elem.value
+    
+        return md5_cat
+    
+    def get_version_from_catalog(self,name):
+        # get the signer
+        rps = oci.auth.signers.get_resource_principals_signer()
+    
+        dcat_client = oci.data_catalog.DataCatalogClient({}, signer=rps)
+    
+        response = dcat_client.get_entity(catalog_id=self.catalog_id, 
+                                  data_asset_key=self.asset_key, 
+                                  entity_key=self.get_key_from_name(name))
+        # version number read from Catalog
+        search = response.data.custom_property_members
+        for elem in search:
+            if elem.display_name == 'file_version':
+                if elem.value == None:
+                    print(BOLD+'No value registered in the data catalog!'+END)
+                    return None
+                else:
+                    md5_cat = elem.value
     
         return md5_cat
 
-    def get_hash_from_file(self,FILE_NAME):
+    def get_hash_from_file(self,name,bucket_name):
         # input is data store from ADS
         # get dataset from object storage, check MD5 hash
-        BUCKET_NAME = self.bucket_name
         TMP_FILE = 'temp.csv'
-
-        ds = DatasetFactory.open(f"ocis://{BUCKET_NAME}/{FILE_NAME}")
+        try:
+            ds = DatasetFactory.open(f"ocis://{bucket_name}/{name}")
+            #break
+        except FileNotFoundError as error:
+            if str(error) == 'path %s/%s must be a file, a directory, or a bucket.' %(bucket_name,name):
+                print(BOLD+'There is no such file in this OS bucket'+END)
+            else:
+                print(BOLD+'There is no such OS bucket'+END)
+            return ''
 
         print('The dataset contains:', ds.shape[0], 'records')
 

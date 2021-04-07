@@ -9,4 +9,7 @@ The code has to be executed inside a Jupyter Notebook, in OCI DS
 * read MD5 hash of files in Object Storage
 * read file version..
 
+## dependecies
+* OCI Python SDK
+
 

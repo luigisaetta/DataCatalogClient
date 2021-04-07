@@ -29,7 +29,7 @@ class  ODSDataCatalog:
                 key_name = elem.key # retrieve entity(file) access key
         return key_name
     
-    def get_hash_from_catalog(self,name):
+    def get_hash_from_catalog(self, name):
         # get the signer
         rps = oci.auth.signers.get_resource_principals_signer()
     

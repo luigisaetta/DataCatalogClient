@@ -17,12 +17,12 @@ class  ODSDataCatalog:
 	# normally it is the default namespace in the DataCatalog
         self.namespace_id = namespace_id # namespace
     
-    def get_key_from_name(self,name):
+    def get_key_from_name(self, name):
         rps = oci.auth.signers.get_resource_principals_signer()
     
         dcat_client = oci.data_catalog.DataCatalogClient({}, signer=rps)
     
-        search = dcat_client.list_entities(catalog_id=self.catalog_id,data_asset_key=self.asset_key).data
+        search = dcat_client.list_entities(catalog_id=self.catalog_id, data_asset_key=self.asset_key).data
         key_name = ''
         for elem in search.items:
             if str(elem.display_name) == name:
@@ -50,7 +50,7 @@ class  ODSDataCatalog:
     
         return md5_cat
     
-    def get_version_from_catalog(self,name):
+    def get_version_from_catalog(self, name):
         # get the signer
         rps = oci.auth.signers.get_resource_principals_signer()
     

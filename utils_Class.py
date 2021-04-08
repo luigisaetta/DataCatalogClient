@@ -10,12 +10,17 @@ BOLD = '\033[1m'
 END = '\033[0m'
 
 class  ODSDataCatalog:
-    def __init__(self, catalog_id, asset_key, namespace_id):
-        self.catalog_id = catalog_id # catalog id
-	# assett key, in this case the assett is the bucket
-        self.asset_key = asset_key 
-	# normally it is the default namespace in the DataCatalog
+    def __init__(self, catalog_id, namespace_id, asset_key):
+        # catalog id
+        self.catalog_id = catalog_id
+        
+        # normally it is the default namespace in the DataCatalog
+        # unless a custom namespace in dataCatalog has been defined and used
+        # "0e4d60d9-d5b5-467f-89bb-22db63a3ee18"
         self.namespace_id = namespace_id # namespace
+        
+        # assett key, in this case the assett is the bucket
+        self.asset_key = asset_key 
     
     def get_key_from_name(self, name):
         rps = oci.auth.signers.get_resource_principals_signer()
@@ -71,7 +76,7 @@ class  ODSDataCatalog:
     
         return md5_cat
 
-    def get_hash_from_file(self,name,bucket_name):
+    def get_hash_from_file(self, name, bucket_name):
         # input is data store from ADS
         # get dataset from object storage, check MD5 hash
         TMP_FILE = 'temp.csv'

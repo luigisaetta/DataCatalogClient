@@ -49,7 +49,7 @@ class  ODSDataCatalog:
             if elem.display_name == 'file_hash':
                 if elem.value == None:
                     print(BOLD+'No value registered in the data catalog!'+END)
-                    return None
+                    return '-'
                 else:
                     md5_cat = elem.value
     
@@ -70,7 +70,7 @@ class  ODSDataCatalog:
             if elem.display_name == 'file_version':
                 if elem.value == None:
                     print(BOLD+'No value registered in the data catalog!'+END)
-                    return None
+                    return '-'
                 else:
                     md5_cat = elem.value
     

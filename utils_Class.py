@@ -121,11 +121,7 @@ class  ODSDataCatalog:
             
             if elem.display_name == 'file_hash':
                 if elem.value == None:
-<<<<<<< HEAD
                     print('No value registered in the data catalog!')
-=======
-                    print(BOLD+'No value registered in the data catalog!'+END)
->>>>>>> d92df674e88d904141821775c439b8cecfd5c4ed
                     return '-'
                 else:
                     md5_cat = elem.value
